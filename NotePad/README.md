@@ -18,4 +18,8 @@
 
 代码：MainActivity
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='350px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='300px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='300px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/seatch.png' width='300px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='300px' />
+
