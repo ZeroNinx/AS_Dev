@@ -3,4 +3,7 @@
 基本要求实现：增删改查，时间戳，笔记查询（查询所有文本关键字）
 拓展要求实现：UI美化，笔记背景更改，笔记分类及查询
 
-
+## 详情
+### 主界面
+xxxx
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' widget='350px' />
