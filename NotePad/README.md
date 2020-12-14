@@ -20,3 +20,18 @@
 
 <img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/seatch.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='250px' />
 
+### 笔记界面
+
+笔记界面以易用性为目的，主要是用字体区分标题栏，统一位置的分类筛选，同时在菜单上利用Layout实现了自定义的图标显示以及点击操作。
+
+美化工作集中在文本编辑背景下划线（代码适配）以及更改背景颜色两个方面。
+
+背景颜色更改使用了SeekBar提及其回调函数实现，利用了单独实现的Activity而不是弹出框加强定制化。
+
+笔记编辑设置了更加美观的行高和间距，下划线功能有安卓原生bug（以解决），这个Bug似乎在高版本中解决了。
+
+代码：ActivityNotepad 
+调色板：PaletteActivity
+自定义文本框View：MultilineTextEditWithUnderLine
+
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='250px' />
