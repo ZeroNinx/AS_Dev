@@ -6,6 +6,47 @@
 拓展要求实现：UI美化，笔记背景更改，笔记分类及查询
 
 ## 详情
+
+### SQlite数据库表格实现
+
+<table>
+  <tr>
+    <th>列名</th>
+    <th>类型</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>int primary key</td>
+    <td>主键，标识文本号</td>
+  </tr>
+  <tr>
+    <td>note_title</td>
+    <td>text</td>
+    <td>标题</td>
+  </tr>
+  <tr>
+    <td>note_text</td>
+    <td>text</td>
+    <td>内容</td>
+  </tr>
+  <tr>
+    <td>note_tag</td>
+    <td>text</td>
+    <td>分类</td>
+  </tr>
+  <tr>
+    <td>note_time</td>
+    <td>datetime</td>
+    <td>时间戳</td>
+  </tr>
+  <tr>
+    <td>background_color</td>
+    <td>int</td>
+    <td>背景色</td>
+  </tr>
+</table>
+  
 ### 主界面
 
 主要是参考安卓5.0以后的风格做了界面美化，由于安卓5.0后更新的扁平化Api更加美观，同时加上系统的支持，一体性更加强。
