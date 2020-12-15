@@ -72,7 +72,9 @@
 笔记编辑设置了更加美观的行高和间距，下划线功能有安卓原生bug（以解决），这个Bug似乎在高版本中解决了。
 
 代码：ActivityNotepad 
+
 调色板：PaletteActivity
+
 自定义文本框View：MultilineTextEditWithUnderLine
 
 <img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='250px' />
