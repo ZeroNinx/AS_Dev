@@ -46,10 +46,50 @@
     <td>背景色</td>
   </tr>
 </table>
+ 
+操作API(自封装：)
+```
+    //载入数据库
+    public void loadDB()
+    {
+        db = SQLiteDatabase.openOrCreateDatabase(getFilesDir().toString() + "/notepad.db", null);
+    }
+
+    //关闭数据库
+    public void closeDB()
+    {
+        db.close();
+    }
+
+    //生成表
+    {
+        String create_table = "create table if not exists notepad(" +
+                              "id integer primary key," +
+                              "note_title text," +
+                              "note_text text," +
+                              "note_tag text default '默认'," +                               "note_time datetime," +
+                              "background_color integer)";
+        db.execSQL(create_table);
+    }
+```
   
 ### 主界面
 
 主要是参考安卓5.0以后的风格做了界面美化，由于安卓5.0后更新的扁平化Api更加美观，同时加上系统的支持，一体性更加强。
+
+主要代码（style.xml）：
+```
+    <resources>
+        <!-- Base application theme. -->
+        <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+            <!-- Customize your theme here. -->
+            <item name="colorPrimary">#208ADF</item>
+            <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+            <item name="colorAccent">@color/colorAccent</item>
+            <item name="android:windowTranslucentStatus">true</item>
+        </style>
+    </resources>
+```
 
 菜单包括分类筛选，搜索，以及多选。其中分类筛选和搜索功能用MenuItem的回调函数实现，多选使用ActionMode实现，主要列表是用了SimpleAdaptor装配器实现。
 

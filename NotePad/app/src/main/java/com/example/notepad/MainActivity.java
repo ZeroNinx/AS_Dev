@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
-        if(mi_tag!=null)
+        if (mi_tag != null)
             mi_tag.setTitle("分类：全部");
         initList(null);
     }
@@ -121,12 +121,12 @@ public class MainActivity extends AppCompatActivity
 
         //生成表
         String create_table = "create table if not exists notepad(" +
-                "id integer primary key," +
-                "note_title text," +
-                "note_text text," +
-                "note_tag text default '默认'," +
-                "note_time datetime," +
-                "background_color integer)";
+                              "id integer primary key," +
+                              "note_title text," +
+                              "note_text text," +
+                              "note_tag text default '默认'," +
+                              "note_time datetime," +
+                              "background_color integer)";
         db.execSQL(create_table);
 
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
 
             mp.put("tv_text", text);
             mp.put("tv_time", result.getString(timeColumn));
-            mp.put("tv_tag", "分类："+result.getString(tagColumn));
+            mp.put("tv_tag", "分类：" + result.getString(tagColumn));
 
             list.add(mp);
         }
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         //设置菜单
         getMenuInflater().inflate(R.menu.menu_index, menu);
         sv_index = (SearchView) menu.findItem(R.id.sv_index).getActionView();
-        mi_tag=menu.findItem(R.id.mi_tag);
+        mi_tag = menu.findItem(R.id.mi_tag);
         mi_tag.setTitle("分类：全部");
 
         //设置搜索框编辑行为
