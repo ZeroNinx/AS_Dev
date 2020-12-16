@@ -48,7 +48,14 @@
 </table>
  
 操作API(自封装：)
-```
+```Java
+
+//主页
+public class MainActivity extends AppCompatActivity
+{
+    //SQLite数据库
+    protected SQLiteDatabase db;
+
     //载入数据库
     public void loadDB()
     {
@@ -67,10 +74,12 @@
                               "id integer primary key," +
                               "note_title text," +
                               "note_text text," +
-                              "note_tag text default '默认'," +                               "note_time datetime," +
+                              "note_tag text default '默认'," +
+                              "note_time datetime," +
                               "background_color integer)";
         db.execSQL(create_table);
     }
+}
 ```
   
 ### 主界面
@@ -78,7 +87,8 @@
 主要是参考安卓5.0以后的风格做了界面美化，由于安卓5.0后更新的扁平化Api更加美观，同时加上系统的支持，一体性更加强。
 
 主要代码（style.xml）：
-```
+
+```xml
     <resources>
         <!-- Base application theme. -->
         <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
@@ -92,6 +102,80 @@
 ```
 
 菜单包括分类筛选，搜索，以及多选。其中分类筛选和搜索功能用MenuItem的回调函数实现，多选使用ActionMode实现，主要列表是用了SimpleAdaptor装配器实现。
+
+关键代码：
+
+```Java
+//主页
+public class MainActivity extends AppCompatActivity
+{
+    //初始化列表
+    protected void initList(String keyword)
+    {
+        //......
+        //构造组件映射列表
+        ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+
+        //查找并装配
+        String sql = "select * from notepad;";
+
+        //重载关键字
+        if (keyword != null)
+            sql = "select * from notepad where note_title like '%" + keyword + "%'" +
+                  " or note_text like '%" + keyword + "%'" +
+                  " or note_tag like '%" + keyword + "%';";
+
+        Cursor result = db.rawQuery(sql, null);
+        while (result.moveToNext())
+        {
+            //获取参数列
+            int idColumn = result.getColumnIndex("id");
+            int titleColumn = result.getColumnIndex("note_title");
+            int textColumn = result.getColumnIndex("note_text");
+            int timeColumn = result.getColumnIndex("note_time");
+            int tagColumn = result.getColumnIndex("note_tag");
+
+            //设置映射
+            HashMap<String, Object> mp = new HashMap<String, Object>();
+            mp.put("tv_id", result.getInt(idColumn));
+            mp.put("iv_icon", R.drawable.icon_notepad);
+
+            //过滤标题
+            String title = result.getString(titleColumn);
+            if (title.length() > 8)
+                title = title.substring(0, 8) + "...";
+
+            mp.put("tv_title", title);
+
+            //过滤文本
+            String text = result.getString(textColumn);
+            if (text.length() > 20)
+                text = text.substring(0, 20) + "...";
+
+            mp.put("tv_text", text);
+            mp.put("tv_time", result.getString(timeColumn));
+            mp.put("tv_tag", "分类：" + result.getString(tagColumn));
+
+            list.add(mp);
+        }
+
+        result.close();
+        closeDB();
+
+        //设定装配器
+        SimpleAdapter sa = new SimpleAdapter(this, list, R.layout.lv_index_unit,
+                new String[]{"tv_id", "iv_icon", "tv_title", "tv_text", "tv_time", "tv_tag"},
+                new int[]{R.id.tv_id, R.id.iv_icon, R.id.tv_title, R.id.tv_text, R.id.tv_time, R.id.tv_tag})
+        {
+           //......
+        };
+
+        //装配
+        lv_index.setAdapter(sa);
+        //......
+    }
+}
+```
 
 考虑到用户的体验，为了避免关键字漏查的情况，搜索功能对标题、文本、分类等涉及的字段都进行查找。多选操作可以长按，迎合传统习惯。
 
