@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity
   
 ### 主界面
 
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='350px' />
+
 主要是参考安卓5.0以后的风格做了界面美化，由于安卓5.0后更新的扁平化Api更加美观，同时加上系统的支持，一体性更加强。
 
 主要代码（style.xml）：
@@ -132,29 +134,13 @@ public class MainActivity extends AppCompatActivity
             int idColumn = result.getColumnIndex("id");
             int titleColumn = result.getColumnIndex("note_title");
             int textColumn = result.getColumnIndex("note_text");
-            int timeColumn = result.getColumnIndex("note_time");
-            int tagColumn = result.getColumnIndex("note_tag");
+            //.....
 
             //设置映射
             HashMap<String, Object> mp = new HashMap<String, Object>();
             mp.put("tv_id", result.getInt(idColumn));
             mp.put("iv_icon", R.drawable.icon_notepad);
-
-            //过滤标题
-            String title = result.getString(titleColumn);
-            if (title.length() > 8)
-                title = title.substring(0, 8) + "...";
-
-            mp.put("tv_title", title);
-
-            //过滤文本
-            String text = result.getString(textColumn);
-            if (text.length() > 20)
-                text = text.substring(0, 20) + "...";
-
-            mp.put("tv_text", text);
-            mp.put("tv_time", result.getString(timeColumn));
-            mp.put("tv_tag", "分类：" + result.getString(tagColumn));
+            //.....
 
             list.add(mp);
         }
@@ -165,10 +151,7 @@ public class MainActivity extends AppCompatActivity
         //设定装配器
         SimpleAdapter sa = new SimpleAdapter(this, list, R.layout.lv_index_unit,
                 new String[]{"tv_id", "iv_icon", "tv_title", "tv_text", "tv_time", "tv_tag"},
-                new int[]{R.id.tv_id, R.id.iv_icon, R.id.tv_title, R.id.tv_text, R.id.tv_time, R.id.tv_tag})
-        {
-           //......
-        };
+                new int[]{R.id.tv_id, R.id.iv_icon, R.id.tv_title, R.id.tv_text, R.id.tv_time, R.id.tv_tag});
 
         //装配
         lv_index.setAdapter(sa);
@@ -183,7 +166,7 @@ public class MainActivity extends AppCompatActivity
 
 代码：MainActivity
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/seatch.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='250px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/seatch.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='250px' />
 
 ### 笔记界面
 
