@@ -1,13 +1,15 @@
 # Notepad - 安卓期中作业
 ### 总览
 
+因为是自己从头实现的Notepad，从新构建了数据表已经增删改查代码。
+
 基本要求实现：增删改查，时间戳，笔记查询（查询所有文本关键字）
 
 拓展要求实现：UI美化，笔记背景更改，笔记分类及查询
 
 ## 详情
 
-### SQlite数据库表格实现
+### SQLite数据库表格实现
 
 <table>
   <tr>
@@ -82,7 +84,11 @@ public class MainActivity extends AppCompatActivity
 }
 ```
   
-### 主界面
+### 主界面 
+
+##### 基本功能：（查找与时间戳）
+
+##### 拓展功能：（界面美化，笔记分类）
 
 <img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/main.png' width='350px' />
 
@@ -103,7 +109,84 @@ public class MainActivity extends AppCompatActivity
     </resources>
 ```
 
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='300px' />
+
 菜单包括分类筛选，搜索，以及多选。其中分类筛选和搜索功能用MenuItem的回调函数实现，多选使用ActionMode实现，主要列表是用了SimpleAdaptor装配器实现。
+
+关键代码：
+
+```Java
+//主页
+public class MainActivity extends AppCompatActivity
+{
+    //ActionMode
+    protected ActionMode am = null;
+    protected HashMap<View, Boolean> vis;
+    protected int selected_items;
+    
+    //ActionMode回调
+    ActionMode.Callback callback = new ActionMode.Callback()
+    {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu)
+        {
+            //设成多选标题栏
+            getMenuInflater().inflate(R.menu.menu_multiselect, menu);
+
+            //初始化参数
+            vis = new HashMap<>();
+            selected_items = 0;
+
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+        {
+            //删除按钮
+            if (menuItem.getItemId() == R.id.mi_delete)
+            {
+                //载入数据库
+                loadDB();
+
+                //遍历已选择的项目
+                for (View v : vis.keySet())
+                {
+                    if (vis.get(v))
+                    {
+                        //获取id
+                        TextView tv_id = v.findViewById(R.id.tv_id);
+                        String id = tv_id.getText().toString();
+                        db.execSQL("delete from notepad where id=" + id);
+                        vis.remove(v);
+                    }
+
+                }
+                //......
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode)
+        {
+            am = null;
+            //还原背景色
+            for (View v : vis.keySet())
+            {
+                v.setBackgroundColor(Color.WHITE);
+            }
+            vis.clear();
+            selected_items = 0;
+        }
+    };
+}
+```
+
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/search.png' width='300px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='300px' />
+
+考虑到用户的体验，为了避免关键字漏查的情况，搜索功能对标题、文本、分类等涉及的字段都进行查找。多选操作可以长按，迎合传统习惯。
 
 关键代码：
 
@@ -160,13 +243,38 @@ public class MainActivity extends AppCompatActivity
 }
 ```
 
-考虑到用户的体验，为了避免关键字漏查的情况，搜索功能对标题、文本、分类等涉及的字段都进行查找。多选操作可以长按，迎合传统习惯。
-
 图标和文字也统一使用了黑白配的风格，加强一体性。
 
-代码：MainActivity
+关键代码：
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/multiselect.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/seatch.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/select_tag.png' width='250px' />
+```xml
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/tv_id"
+        android:textColor="#00FF0000" />
+
+```
+
 
 ### 笔记界面
 
