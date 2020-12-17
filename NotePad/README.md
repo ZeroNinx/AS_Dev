@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity
 
 美化工作集中在文本编辑背景下划线（代码适配）以及更改背景颜色两个方面。
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='250px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='300px' />
 
 核心代码：
 
@@ -342,7 +342,7 @@ public class ActivityNotepad extends AppCompatActivity
 
 背景颜色更改使用了SeekBar提及其回调函数实现，利用了单独实现的Activity而不是弹出框加强定制化。
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='250px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='300px' />
 
 核心代码：
 
@@ -415,7 +415,7 @@ public class PaletteActivity extends AppCompatActivity
 
 笔记编辑改善了的行高和间距，下划线功能有安卓原生Bug，于是自己重写了TextEdit得以解决，这个Bug似乎在高版本中解决了。
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='250px' />
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='300px' />
 
 ```Java
 
@@ -471,7 +471,6 @@ public class MultilineTextEditWithUnderLine extends androidx.appcompat.widget.Ap
     }
 
 }
-
 
 ```
 
