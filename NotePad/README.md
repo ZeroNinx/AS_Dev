@@ -119,11 +119,6 @@ public class MainActivity extends AppCompatActivity
 //主页
 public class MainActivity extends AppCompatActivity
 {
-    //ActionMode
-    protected ActionMode am = null;
-    protected HashMap<View, Boolean> vis;
-    protected int selected_items;
-    
     //ActionMode回调
     ActionMode.Callback callback = new ActionMode.Callback()
     {
@@ -147,9 +142,6 @@ public class MainActivity extends AppCompatActivity
             //删除按钮
             if (menuItem.getItemId() == R.id.mi_delete)
             {
-                //载入数据库
-                loadDB();
-
                 //遍历已选择的项目
                 for (View v : vis.keySet())
                 {
@@ -161,9 +153,7 @@ public class MainActivity extends AppCompatActivity
                         db.execSQL("delete from notepad where id=" + id);
                         vis.remove(v);
                     }
-
                 }
-                //......
             }
             return false;
         }
@@ -201,9 +191,6 @@ public class MainActivity extends AppCompatActivity
         //构造组件映射列表
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 
-        //查找并装配
-        String sql = "select * from notepad;";
-
         //重载关键字
         if (keyword != null)
             sql = "select * from notepad where note_title like '%" + keyword + "%'" +
@@ -227,9 +214,6 @@ public class MainActivity extends AppCompatActivity
 
             list.add(mp);
         }
-
-        result.close();
-        closeDB();
 
         //设定装配器
         SimpleAdapter sa = new SimpleAdapter(this, list, R.layout.lv_index_unit,
@@ -274,22 +258,220 @@ public class MainActivity extends AppCompatActivity
         android:textColor="#00FF0000" />
 
 ```
-
-
+ 
 ### 笔记界面
 
 笔记界面以易用性为目的，主要是用字体区分标题栏，统一位置的分类筛选，同时在菜单上利用Layout实现了自定义的图标显示以及点击操作。
 
 美化工作集中在文本编辑背景下划线（代码适配）以及更改背景颜色两个方面。
 
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='250px' />
+
+核心代码：
+
+```Java
+
+//主页
+public class ActivityNotepad extends AppCompatActivity
+{
+    //创建时
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        //...
+        //载入数据库
+        db = SQLiteDatabase.openOrCreateDatabase(getFilesDir().toString() + "/notepad.db", null);
+
+        //如果有数据
+        if (getIntent().hasExtra("id"))
+        {
+            //获取id
+            id = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("id")));
+
+            Cursor rows = db.rawQuery("select * from notepad where id = " + id, null);
+            if (rows.moveToNext())
+            {
+                //取得参数
+                int titleColumn = rows.getColumnIndex("note_title");
+                int textColumn = rows.getColumnIndex("note_text");
+                //...
+
+                //还原参数
+                et_title.setText(rows.getString(titleColumn));
+                et_text.setText(rows.getString(textColumn));
+                //...
+            }
+            rows.close();
+        }
+    }
+    
+    //保存笔记按钮
+    public void saveNote()
+    {
+        try
+        {
+            //载入数据库
+            db = SQLiteDatabase.openOrCreateDatabase(getFilesDir().toString() + "/notepad.db", null);
+            ContentValues cv = new ContentValues();
+
+            //获取时间
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+            Date date = new Date(System.currentTimeMillis());
+
+            //获取背景颜色
+            ColorDrawable cd = (ColorDrawable) sv.getBackground();
+
+            //构造数据
+            cv.put("note_title", et_title.getText().toString());
+            cv.put("note_text", et_text.getText().toString());
+            //...
+
+            //更新条目
+            db.update("notepad", cv, "id=" + id, null);
+            db.close();
+        }
+        catch (Exception e)
+        {
+            Log.i("Save note Failed", e.toString());
+        }
+        finish();
+    }
+}
+
+```
+
 背景颜色更改使用了SeekBar提及其回调函数实现，利用了单独实现的Activity而不是弹出框加强定制化。
 
-笔记编辑设置了更加美观的行高和间距，下划线功能有安卓原生bug（以解决），这个Bug似乎在高版本中解决了。
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='250px' />
 
-代码：ActivityNotepad 
+核心代码：
 
-调色板：PaletteActivity
+```xml
 
-自定义文本框View：MultilineTextEditWithUnderLine
+    <!--activity作为dialog-->
+    <style name="dialog_style" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!--是否悬浮在activity上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--透明是否-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@null</item>
+        <!--设置没有窗口标题、dialog标题等各种标题-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:title">@null</item>
+        <item name="android:dialogTitle">@null</item>
+    </style>
 
-<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/palette.png' width='250px' /><img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/set_tag.png' width='250px' />
+```
+
+```Java
+
+public class PaletteActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        //...
+        //获取id
+        id = getIntent().getIntExtra("id", 0);
+        int color = getIntent().getIntExtra("background_color", 0);
+
+        //分离颜色
+        red = (color & 0xff0000) >> 16;
+        green = (color & 0x00ff00) >> 8;
+        blue = (color & 0x0000ff);
+
+        //设置进度条
+        sb_red.setProgress(red);
+        sb_green.setProgress(green);
+        sb_blue.setProgress(blue);
+
+        //设置拖动监听器
+        sb_red.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b)
+            {
+                red = i;
+                tv_color.setBackgroundColor(Color.rgb(red, green, blue));
+            }
+        });
+        //...
+
+        //提交按钮
+        tv_submit.setOnClickListener(view ->
+        {
+            //存入数据库
+            db = SQLiteDatabase.openOrCreateDatabase(getFilesDir().toString() + "/notepad.db", null);
+
+            ContentValues cv = new ContentValues();
+            cv.put("background_color", Color.rgb(red, green, blue));
+            db.update("notepad", cv, "id=" + id, null);
+        });
+
+    }
+}
+
+```
+
+笔记编辑改善了的行高和间距，下划线功能有安卓原生Bug，于是自己重写了TextEdit得以解决，这个Bug似乎在高版本中解决了。
+
+<img src='https://github.com/ZeroNinx/AS_Dev/blob/master/NotePad/screenshot/notepad.png' width='250px' />
+
+```Java
+
+public class MultilineTextEditWithUnderLine extends androidx.appcompat.widget.AppCompatEditText
+{
+
+    //构造函数
+    public MultilineTextEditWithUnderLine(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+
+        //初始化
+        linePaint = new Paint();
+        paperColor = Color.argb(0, 0, 0, 0);
+    }
+
+    //绘制事件
+    protected void onDraw(Canvas paramCanvas)
+    {
+        //绘制背景
+        paramCanvas.drawColor(this.paperColor);
+
+        //行数
+        int lines = getLineCount();
+
+        //编辑框高
+        int height = getHeight();
+
+        //行高
+        int lineHeight = getLineHeight();
+
+        //约束行数
+        int m = height / lineHeight;
+        lines = Math.max(lines, m);
+
+        //下划线空间
+        int underlineSpace = (int) (lineHeight * (getLineSpacingMultiplier() - 1.2d));
+
+        //顶部间距
+        int paddingTop = getCompoundPaddingTop();
+        paddingTop -= underlineSpace;
+        int currentLine = 1;
+
+        //绘图
+        while (currentLine < lines)
+        {
+            paddingTop += lineHeight;
+            paramCanvas.drawLine(0.0f, paddingTop, getRight(), paddingTop, this.linePaint);
+            paramCanvas.save();
+            currentLine++;
+        }
+
+    }
+
+}
+
+
+```
+
